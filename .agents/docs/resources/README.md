@@ -22,12 +22,17 @@ resource_id: resource:provider/local-coder
 kind: model
 name: Local Coder
 protocols:
-  - openai-compatible
+  - name: openai-compatible
+    operations:
+      - models.list
+      - responses.create
+      - chat.completions
 capabilities:
-  chat: true
   streaming: true
+  websocket: false
   tools: true
-  vision: false
+  input_modalities: [text]
+  output_modalities: [text]
   logprobs: false
 availability: online
 lease_modes:
@@ -36,6 +41,8 @@ lease_modes:
 ```
 
 A descriptor MAY include public pricing hints, capacity, context limits, data-handling declarations, or expected latency. It **MUST NOT** contain upstream tokens, cookies, private prompts, local filesystem paths, administrative endpoints, or credentials.
+
+Protocol support is declared per operation. Advertising `openai-compatible`, `anthropic-compatible`, `gemini-compatible`, `codex-compatible`, or another dialect does not imply that every route in that ecosystem is available. Streaming, WebSocket, tools, image input, image output, and usage reporting remain independent capability fields.
 
 `resource_id` is stable within the provider identity. Consumers **MUST** pair it with the provider peer ID and must not assume two providers using the same local name refer to the same resource.
 
@@ -58,6 +65,8 @@ Catalog responses **MUST** omit unauthorized resources and unauthorized fields r
 ## Model-compatible discovery
 
 For model resources, a local HiveMesh gateway may project the filtered catalog into `/v1/models`. Only models both visible to the consumer and mountable through the selected compatible API should appear.
+
+The HiveMesh-native `/v1/hive/capabilities` view may expose the negotiated descriptor for local clients. That HTTP path is an implementation-facing projection; peer-to-peer exchange uses the versioned catalog protocol rather than remote access to another daemon's local API.
 
 ## Change events
 

@@ -33,6 +33,10 @@ The protocol supports projecting leased model resources through familiar local i
 
 Streaming, tools, vision, log probabilities, and other capabilities are advertised per resource. Unsupported or unleased optional capabilities must fail explicitly. A generic task or worker API may coexist but cannot be the only way to use a model resource.
 
+An implementation may also expose provider-native Gemini, image, WebSocket, or other compatibility routes when the resource descriptor declares the corresponding operation. Catalog membership alone is not sufficient evidence of route support.
+
+Non-model resources and HiveMesh-specific operations may use a local `/v1/hive/invocations` projection. This path maps to the same versioned invocation envelope and HiveLink channel; it does not create a separate remote authorization mechanism.
+
 ## Stream events
 
 A stream carries ordered events with a monotonically increasing sequence number:
